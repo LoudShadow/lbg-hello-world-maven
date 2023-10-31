@@ -7,28 +7,37 @@ pipeline {
         }
 
         stages {
-            stage('Checkout') {
+          stage('Checkout') {
+                  steps {
+                        git branch: 'main', url: 'https://github.com/PaulMercer1/lbg-hello-world-maven.git'
+                  }
+          }
+          stage('Compile') {
+              steps {
+                 // Run Maven on a Unix agent.
+                 sh "mvn clean compile"
+                }
+           }
+          stage('Testing') {
                 steps {
-                    // Get some code from a GitHub repository
-
-                    git branch: 'main', url: 'https://github.com/LoudShadow/lbg-hello-world-maven.git'
+                 // Run Maven on a Unix agent.
+                 sh "mvn test"
                 }
             }
-            stage("SonarQube"){
+          stage('SonarQube') {
                 environment {
-                        scannerHome = tool "sonarqube"
+                        scannerHome = tool 'sonarqube'
                 }
-                steps{
-                    withSonarQubeEnv("sonar-qube-1"){
-                        sh "${scannerHome}/bin/sonar-scanner"
-                   }
-                        
+                steps {
+                        withSonarQubeEnv('sonar-qube-1') {
+                                sh "${scannerHome}/bin/sonar-scanner"
+                        }
                 }
-            }
-            stage('Compile') {
+           }
+          stage('Package') {
                 steps {
                     // Run Maven on a Unix agent.
-                    sh "mvn clean compile"
+                    sh "mvn package"
                 }
             }
         }
