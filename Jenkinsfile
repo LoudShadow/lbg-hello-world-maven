@@ -30,7 +30,9 @@ pipeline {
                 }
                 steps {
                         withSonarQubeEnv('sonar-qube-1') {
-                                sh "${scannerHome}/bin/sonar-scanner"
+                                sh "mvn sonar:sonar \
+                                        -Dsonar.projectKey=maven-jenkins-pipeline \
+                                        -Dsonar.host.url=${scannerHome}"
                         }
                 }
            }
